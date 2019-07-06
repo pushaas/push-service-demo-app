@@ -1,0 +1,19 @@
+{
+  "name": "push-service-demo-app",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rafaeleyng/push-service-demo-app.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/rafaeleyng/push-service-demo-app/issues"
+  },
+  "homepage": "https://github.com/rafaeleyng/push-service-demo-app#readme"
+}
