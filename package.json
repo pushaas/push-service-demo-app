@@ -4,9 +4,11 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "watch": "nodemon index.js"
+    "lint": "eslint --ext .js ./src",
+    "lint:fix": "eslint --ext .js ./src --fix",
+    "lint:watch": "esw --ext .js ./src --fix --watch",
+    "start": "node ./src/index.js",
+    "watch": "nodemon ./src/index.js"
   },
   "repository": {
     "type": "git",
@@ -20,9 +22,14 @@
   "homepage": "https://github.com/rafaeleyng/push-service-demo-app#readme",
   "dependencies": {
     "body-parser": "1.19.0",
-    "express": "4.17.1"
+    "dotenv": "8.0.0",
+    "express": "4.17.1",
+    "uuid": "3.3.2"
   },
   "devDependencies": {
+    "eslint": "5.3.0",
+    "eslint-config-airbnb-base": "13.2.0",
+    "eslint-plugin-import": "^2.17.2",
     "nodemon": "1.19.1"
   }
 }
