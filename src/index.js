@@ -7,9 +7,9 @@ const apiRouter = require('./routers/api')
 
 const main = async () => {
   try {
-    await pushService.ensureChannelNews()
+    await pushService.ensureArticlesChannel()
   } catch (err) {
-    console.error('Could not ensure news channel', err)
+    console.error('Could not ensure articles channel', err)
     return
   }
 

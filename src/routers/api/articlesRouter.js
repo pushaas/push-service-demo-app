@@ -5,7 +5,7 @@ const pushService = require('../../services/pushService')
 
 const router = express.Router()
 
-let news = [
+let articles = [
   {
     id: uuidv4(),
     published: new Date(),
@@ -21,41 +21,41 @@ let news = [
 ]
 
 router.get('/', (req, res) => {
-  res.json(news)
+  res.json(articles)
 })
 
 router.post('/', (req, res) => {
-  const toCreate = {
+  const article = {
     id: uuidv4(),
     published: new Date(),
     text: req.body.text || 'Default text',
     title: req.body.title || 'Default title',
   }
-  news = [toCreate, ...news]
+  articles = [article, ...articles]
 
   res.status(201)
   res.end()
 
-  // notify the creation of this new on the news channel
-  pushService.postMessageNewsCreation(toCreate)
+  // notify the creation of this article on the articles channel
+  pushService.postMessageArticleCreation(article)
 
-  // create a specific channel for this new
-  pushService.createChannelNew(toCreate)
+  // create a specific channel for this article
+  pushService.createArticleChannel(article)
 })
 
 router.delete('/:id', (req, res) => {
   const { id } = req.params
-  const toDelete = news.find(n => n.id === id)
-  news = news.filter(n => n !== toDelete)
+  const article = articles.find(n => n.id === id)
+  articles = articles.filter(n => n !== article)
 
   res.status(204)
   res.end()
 
-  // notify the deletion of this new on the news channel
-  pushService.postMessageNewsDeletion(toDelete)
+  // notify the deletion of this article on the articles channel
+  pushService.postMessageArticleDeletion(article)
 
-  // delete specific channel for this new
-  pushService.deleteChannelNew(toDelete)
+  // delete specific channel for this article
+  pushService.deleteArticleChannel(article)
 })
 
 module.exports = router
