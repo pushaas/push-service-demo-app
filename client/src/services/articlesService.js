@@ -1,4 +1,4 @@
-const postNew = (data) => fetch('/api/news', {
+const postArticle = (data) => fetch('/api/articles', {
   method: 'POST',
   headers: {
     'Content-Type': 'application/json',
@@ -6,10 +6,10 @@ const postNew = (data) => fetch('/api/news', {
   body: JSON.stringify(data)
 })
 
-const getNews = () => fetch('/api/news')
+const getArticles = () => fetch('/api/articles')
   .then(res => res.json())
 
 export default {
-  getNews,
-  postNew,
+  getArticles,
+  postArticle,
 }

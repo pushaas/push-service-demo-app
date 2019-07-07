@@ -4,7 +4,7 @@ import { BrowserRouter as Router, Route, NavLink } from 'react-router-dom'
 import './Root.css'
 
 import configService from '../services/configService'
-import newsService from '../services/newsService'
+import articlesService from '../services/articlesService'
 
 import ConfigContext from '../contexts/ConfigContext'
 
@@ -22,7 +22,7 @@ function Home() {
       </p>
       <p>
         <small>
-          Open a couple of tabs and check how the news are updated in real time.
+          Open a couple of tabs and check how the articles are updated in real time.
         </small>
       </p>
     </div>
@@ -30,22 +30,53 @@ function Home() {
 }
 
 function Read({ match }) {
-  const [news, setNews] = useState([])
+  const config = useContext(ConfigContext)
+  const [articles, setArticles] = useState([])
+  const [pushStreamInstance, setPushStreamInstance] = useState(null)
 
   useEffect(() => {
-    newsService.getNews().then(setNews)
+    articlesService.getArticles().then(setArticles)
   }, [])
 
-  console.log('### Read match', match)
+  // useEffect(() => {
+  //   const parsedUrl = url.parse(config.pushStream.url)
+  //   const settings = {
+  //     host: parsedUrl.hostname,
+  //     port: parsedUrl.port,
+  //     modes: 'eventsource',
+  //     messagesPublishedAfter: 900,
+  //     messagesControlByArgument: true,
+  //     onerror: (err) => console.error('[onerror]', err),
+  //   }
+  //
+  //   const instance = pushStreamService.newPushStreamInstance(settings)
+  //   setPushStreamInstance(instance)
+  //   instance.addChannel(channel.id)
+  //   instance.connect()
+  //
+  //   return () => {
+  //     instance.disconnect()
+  //   }
+  // }, [setPushStreamInstance, config, channel])
+
+  // useEffect(() => {
+  //   if (!pushStreamInstance) {
+  //     return
+  //   }
+  //   const onMessage = (text, id, channel, eventId, isLastMessageFromBatch, time) => {
+  //     setMessages([...messages, new Message({ text, id, channel, eventId, isLastMessageFromBatch, time })])
+  //   }
+  //   pushStreamInstance.onmessage = onMessage
+  // }, [pushStreamInstance, messages])
 
   return (
     <div className="Read">
-      <h2 className="App-subtitle">Read The News</h2>
-      <div className="Read-news">
-        {news.map(n => (
-          <article key={n.id} className="Read-new">
-              <h3 className="Read-title">{n.title}</h3>
-              <NavLink to={`${match.url}/${n.id}`} className="App-link">Read more</NavLink>
+      <h2 className="App-subtitle">Read Articles</h2>
+      <div className="Read-articles">
+        {articles.map(article => (
+          <article key={article.id} className="Read-article">
+              <h3 className="Read-title">{article.title}</h3>
+              <NavLink to={`${match.url}/${article.id}`} className="App-link">Read more</NavLink>
               {/* TODO */}
               {/* <p className="Read-text">{n.text}</p> */}
           </article>
@@ -55,7 +86,7 @@ function Read({ match }) {
   )
 }
 
-function ReadNew({ match }) {
+function ReadArticle({ match }) {
   return (
     <div>
       {match.params.id}
@@ -80,12 +111,12 @@ function Publish() {
       return
     }
 
-    const newData = {
+    const articleData = {
       title,
       text,
     }
 
-    newsService.postNew(newData)
+    articlesService.postArticle(articleData)
       .then(() => {
         setTitle('')
         setText('')
@@ -94,7 +125,7 @@ function Publish() {
 
   return (
     <div className="Publish">
-      <h2 className="App-subtitle">Publish News</h2>
+      <h2 className="App-subtitle">Publish Articles</h2>
       <form className="Publish-form" autoComplete="off" onSubmit={handleSubmit}>
         <div className="Publish-field">
           <label htmlFor="title">Title</label>
@@ -120,8 +151,8 @@ function App() {
         <h1 className="App-title">Push Service Demo App</h1>
         <nav>
           <NavLink exact to="/" className="App-link App-nav" activeClassName="App-nav-active">Home</NavLink>
-          <NavLink exact to="/read" className="App-link App-nav" activeClassName="App-nav-active">Read The News</NavLink>
-          <NavLink exact to="/publish" className="App-link App-nav" activeClassName="App-nav-active">Publish News</NavLink>
+          <NavLink exact to="/read" className="App-link App-nav" activeClassName="App-nav-active">Read Articles</NavLink>
+          <NavLink exact to="/publish" className="App-link App-nav" activeClassName="App-nav-active">Publish Articles</NavLink>
         </nav>
       </header>
 
@@ -130,7 +161,7 @@ function App() {
       <main className="App-main">
         <Route path="/" exact component={Home} />
         <Route path="/read" exact component={Read} />
-        <Route path="/read/:id" exact component={ReadNew} />
+        <Route path="/read/:id" exact component={ReadArticle} />
         <Route path="/publish" exact component={Publish} />
       </main>
     </div>
