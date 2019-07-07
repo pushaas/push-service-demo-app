@@ -41,13 +41,13 @@ let news = [
   {
     id: uuidv4(),
     published: new Date(),
-    text: 'Brazil x France will match up next Sunday on Paris.',
-    title: 'Watch live the World Cup',
+    text: 'Brazil x France will match up next Sunday in Paris.',
+    title: 'Soccer World Cup Finals!',
   },
   {
     id: uuidv4(),
     published: new Date(),
-    text: 'We\'ve played the game and it is awesome. Great graphics and game mechanics, plus 4 new civs.',
+    text: 'We\'ve played the game and it is awesome. Great graphics and game mechanics, plus 4 new civilizations.',
     title: 'Age Of Empires 2 Definitive Edition',
   },
 ]
@@ -80,14 +80,20 @@ newsRouter.delete('/:id', (req, res) => {
 })
 
 /*
+  api router
+*/
+const apiRouter = express.Router()
+apiRouter.use('/healthcheck', healthcheckRouter)
+apiRouter.use('/config', configRouter)
+apiRouter.use('/news', newsRouter)
+
+/*
   main
 */
 const main = () => {
   const app = express()
   app.use(bodyParser.json())
-  app.use('/healthcheck', healthcheckRouter)
-  app.use('/config', configRouter)
-  app.use('/news', newsRouter)
+  app.use('/api', apiRouter)
   app.listen(port, () => console.log(`push-service-demo-app listening on port ${port}`)) // eslint-disable-line no-console
 }
 
