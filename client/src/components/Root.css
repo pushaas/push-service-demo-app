@@ -31,6 +31,8 @@
 .App-nav {
   margin: 0 20px;
   font-size: 0.8em;
+  width: 150px;
+  display: inline-block;
 }
 
 .App-link {
@@ -46,7 +48,6 @@
   min-height: 70vh;
   width: 100%;
   display: flex;
-  direction: column;
   justify-content: center;
 }
 
@@ -80,8 +81,9 @@
   margin: 10px;
 }
 
-.Read-text {
+.Read-new .App-link {
   font-size: 0.6em;
+  display: block;
   margin: 10px;
 }
 
