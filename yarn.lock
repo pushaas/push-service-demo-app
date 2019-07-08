@@ -2192,10 +2192,10 @@ punycode@^2.1.0:
   resolved "https://registry.yarnpkg.com/punycode/-/punycode-2.1.1.tgz#b58b010ac40c22c5657616c8d2c2c02c7bf479ec"
   integrity sha512-XRsRjdf+j5ml+y/6GKHPZbrF/8p2Yga0JPtdqTIY2Xe5ohJPD9saDJJLPvp9+NSBprVvevdXZybnj2cv8OEd0A==
 
-push-api-client-javascript@0.0.1:
-  version "0.0.1"
-  resolved "https://registry.yarnpkg.com/push-api-client-javascript/-/push-api-client-javascript-0.0.1.tgz#6bd60fc04884656154df2f854fcd92a52ef8bf72"
-  integrity sha512-y4RGrJG2Yu6Bh1Khu13PlSWzwjutYJphSyqDPz5fzVhJWm4a0sAmqHwsWLg62eD289yCCNSBCEYN8LC571+QJQ==
+push-api-client-javascript@0.0.2:
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/push-api-client-javascript/-/push-api-client-javascript-0.0.2.tgz#cb32e8f0b6a9300e5b95254cc9b696e0f531ef7f"
+  integrity sha512-rLa0+0WwV2SMyJGj6Nm3IGZYKWy/JNuDvHz/hicyCd5uyD807+uyNYvpUD66Fu+Hg0oOZacQf+X+XTQUSaQsOA==
   dependencies:
     axios "0.19.0"
 

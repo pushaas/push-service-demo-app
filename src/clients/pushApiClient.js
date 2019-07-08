@@ -4,8 +4,14 @@ const endpoint = process.env.PUSHAAS_ENDPOINT
 const username = process.env.PUSHAAS_USERNAME
 const password = process.env.PUSHAAS_PASSWORD
 
-module.exports = new PushApiClient({
+const options = {
   endpoint,
   username,
   password,
-})
+}
+
+const axiosOptions = {
+  timeout: 2000,
+}
+
+module.exports = new PushApiClient(options, axiosOptions)

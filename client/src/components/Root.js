@@ -1,5 +1,6 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { Fragment, useContext, useEffect, useState } from 'react'
 import { BrowserRouter as Router, Route, NavLink } from 'react-router-dom'
+import { ToastContainer, toast } from 'react-toastify'
 
 import './Root.css'
 
@@ -36,7 +37,12 @@ function Read({ match }) {
   const [pushStreamInstance, setPushStreamInstance] = useState(null)
 
   useEffect(() => {
-    articlesService.getArticles().then(setArticles)
+    articlesService.getArticles()
+      .then(setArticles)
+      .catch((err) => {
+        toast.error('Failed to get articles. Ensure that both the push-service-demo-app and the push-api are running')
+        console.error('Failed to get articles', err)
+      })
   }, [])
 
   useEffect(() => {
@@ -67,16 +73,22 @@ function Read({ match }) {
     if (!pushStreamInstance) {
       return
     }
+    console.log('### useEffect')
     const onMessage = (text, id, channel, eventId, isLastMessageFromBatch, time) => {
       if (text === 'ping') {
         return
       }
 
       const message = JSON.parse(text)
+      const { action, data } = message
       console.log('### message', message)
+      if (action === 'create') {
+        setArticles([data, ...articles])
+        return
+      }
     }
     pushStreamInstance.onmessage = onMessage
-  }, [pushStreamInstance])
+  }, [pushStreamInstance, articles])
 
   return (
     <div className="Read">
@@ -86,8 +98,6 @@ function Read({ match }) {
           <article key={article.id} className="Read-article">
               <h3 className="Read-title">{article.title}</h3>
               <NavLink to={`${match.url}/${article.id}`} className="App-link">Read more</NavLink>
-              {/* TODO */}
-              {/* <p className="Read-text">{n.text}</p> */}
           </article>
         ))}
       </div>
@@ -130,6 +140,10 @@ function Publish() {
         setTitle('')
         setText('')
       })
+      .catch((err) => {
+        toast.error('Failed to post article. Ensure that both the push-service-demo-app and the push-api are running')
+        console.error('Failed to post article', err)
+      })
   }
 
   return (
@@ -154,8 +168,10 @@ function Publish() {
 }
 
 function App() {
-  return (
-    <div className="App">
+  const config = useContext(ConfigContext)
+  const loading = (null)
+  const loaded = (
+    <Fragment>
       <header className="App-header">
         <h1 className="App-title">Push Service Demo App</h1>
         <nav>
@@ -173,6 +189,12 @@ function App() {
         <Route path="/read/:id" exact component={ReadArticle} />
         <Route path="/publish" exact component={Publish} />
       </main>
+    </Fragment>
+  )
+
+  return (
+    <div className="App">
+      {config ? loaded : loading}
     </div>
   )
 }
@@ -180,13 +202,19 @@ function App() {
 function Root() {
   const [config, setConfig] = useState(null)
   useEffect(() => {
-    configService.getConfig().then(setConfig)
+    configService.getConfig()
+      .then(setConfig)
+      .catch((err) => {
+        toast.error('Failed to get config. Ensure that both the push-service-demo-app and the push-api are running')
+        console.error('Failed to get config', err)
+      })
   }, [])
 
   return (
     <Router>
+      <ToastContainer />
       <ConfigContext.Provider value={config}>
-        {config ? <App /> : null}
+        <App />
       </ConfigContext.Provider>
     </Router>
   )
