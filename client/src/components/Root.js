@@ -3,8 +3,9 @@ import { BrowserRouter as Router, Route, NavLink } from 'react-router-dom'
 
 import './Root.css'
 
-import configService from '../services/configService'
 import articlesService from '../services/articlesService'
+import configService from '../services/configService'
+import pushStreamService from '../services/pushStreamService'
 
 import ConfigContext from '../contexts/ConfigContext'
 
@@ -38,36 +39,44 @@ function Read({ match }) {
     articlesService.getArticles().then(setArticles)
   }, [])
 
-  // useEffect(() => {
-  //   const parsedUrl = url.parse(config.pushStream.url)
-  //   const settings = {
-  //     host: parsedUrl.hostname,
-  //     port: parsedUrl.port,
-  //     modes: 'eventsource',
-  //     messagesPublishedAfter: 900,
-  //     messagesControlByArgument: true,
-  //     onerror: (err) => console.error('[onerror]', err),
-  //   }
-  //
-  //   const instance = pushStreamService.newPushStreamInstance(settings)
-  //   setPushStreamInstance(instance)
-  //   instance.addChannel(channel.id)
-  //   instance.connect()
-  //
-  //   return () => {
-  //     instance.disconnect()
-  //   }
-  // }, [setPushStreamInstance, config, channel])
+  useEffect(() => {
+    const { port } = config.pushStream
+    const host = config.pushStream.hostname
+    const articlesChannel = config.channels.articles
 
-  // useEffect(() => {
-  //   if (!pushStreamInstance) {
-  //     return
-  //   }
-  //   const onMessage = (text, id, channel, eventId, isLastMessageFromBatch, time) => {
-  //     setMessages([...messages, new Message({ text, id, channel, eventId, isLastMessageFromBatch, time })])
-  //   }
-  //   pushStreamInstance.onmessage = onMessage
-  // }, [pushStreamInstance, messages])
+    const settings = {
+      host,
+      port,
+      modes: 'eventsource',
+      messagesPublishedAfter: 900,
+      messagesControlByArgument: true,
+      onerror: (err) => console.error('[onerror]', err),
+    }
+
+    const instance = pushStreamService.newPushStreamInstance(settings)
+    setPushStreamInstance(instance)
+    instance.addChannel(articlesChannel)
+    instance.connect()
+
+    return () => {
+      instance.disconnect()
+    }
+  }, [setPushStreamInstance, config])
+
+  useEffect(() => {
+    if (!pushStreamInstance) {
+      return
+    }
+    const onMessage = (text, id, channel, eventId, isLastMessageFromBatch, time) => {
+      if (text === 'ping') {
+        return
+      }
+
+      const message = JSON.parse(text)
+      console.log('### message', message)
+    }
+    pushStreamInstance.onmessage = onMessage
+  }, [pushStreamInstance])
 
   return (
     <div className="Read">

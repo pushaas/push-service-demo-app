@@ -1,9 +1,15 @@
 const express = require('express')
 
+const pushService = require('../../services/pushService')
+
 const router = express.Router()
 
 router.get('/', (req, res) => {
-  res.json({})
+  pushService.getConfig()
+    .then(data => res.json(data))
+    .catch((err) => {
+      console.error('[configRouter.get] error getting config data from push-api', err)
+    })
 })
 
 module.exports = router

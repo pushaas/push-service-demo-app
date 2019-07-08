@@ -1,6 +1,7 @@
 require('dotenv').config()
 const express = require('express')
 const bodyParser = require('body-parser')
+const morgan = require('morgan')
 
 const pushService = require('./services/pushService')
 const apiRouter = require('./routers/api')
@@ -15,6 +16,7 @@ const main = async () => {
 
   const app = express()
   app.use(bodyParser.json())
+  app.use(morgan('tiny'))
   app.use('/api', apiRouter)
 
   const port = process.env.PORT || 8888

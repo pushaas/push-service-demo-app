@@ -36,11 +36,8 @@ router.post('/', (req, res) => {
   res.status(201)
   res.end()
 
-  // notify the creation of this article on the articles channel
-  pushService.postMessageArticleCreation(article)
-
-  // create a specific channel for this article
-  pushService.createArticleChannel(article)
+  pushService.postMessageArticleCreation(article) // notify the creation of this article on the articles channel
+  pushService.createArticleChannel(article) // create a specific channel for this article
 })
 
 router.delete('/:id', (req, res) => {
@@ -51,11 +48,8 @@ router.delete('/:id', (req, res) => {
   res.status(204)
   res.end()
 
-  // notify the deletion of this article on the articles channel
-  pushService.postMessageArticleDeletion(article)
-
-  // delete specific channel for this article
-  pushService.deleteArticleChannel(article)
+  pushService.postMessageArticleDeletion(article) // notify the deletion of this article on the articles channel
+  pushService.deleteArticleChannel(article) // delete specific channel for this article
 })
 
 module.exports = router
