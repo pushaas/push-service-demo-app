@@ -89,7 +89,10 @@ function Read({ match }) {
         {articles.map(article => (
           <article key={article.id} className="Read-article">
               <h3 className="Read-title">{article.title}</h3>
-              <NavLink to={`${match.url}/${article.id}`} className="App-link">Read more</NavLink>
+              <div className="Read-links">
+                <NavLink to={{pathname: `${match.url}/${article.id}`, state: { article }}} className="App-link">Read more</NavLink>
+                <NavLink to={{pathname: `/publish/${article.id}`, state: { article }}} className="App-link">Edit article</NavLink>
+              </div>
           </article>
         ))}
       </div>

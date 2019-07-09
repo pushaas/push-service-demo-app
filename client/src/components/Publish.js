@@ -1,4 +1,5 @@
-import React, { useState } from 'react'
+import React, { Fragment, useState } from 'react'
+import { Redirect } from 'react-router-dom'
 import { toast } from 'react-toastify'
 
 import articlesService from '../services/articlesService'
@@ -9,38 +10,90 @@ const useFormInput = (initial) => {
   return [value, setValue, handleChange]
 }
 
-function Publish() {
-  const [title, setTitle, handleTitleChange] = useFormInput('')
-  const [text, setText, handleTextChange] = useFormInput('')
+function Publish({ location }) {
+  const { article = {} } = location.state || {}
+  const isCreating = !article.id
 
-  const handleSubmit = (e) => {
-    e.preventDefault()
+  const [redirect, setRedirect] = useState(false)
+  const [title, setTitle, handleTitleChange] = useFormInput(isCreating ? '' : article.title) // eslint-disable-line no-unused-vars
+  const [text, setText, handleTextChange] = useFormInput(isCreating ? '' : article.text) // eslint-disable-line no-unused-vars
 
+  const handleSubmit = e => e.preventDefault()
+
+  if (redirect) {
+    return (
+      <Redirect to="/read"/>
+    )
+  }
+
+  const getArticleData = () => {
     if (!title) {
-      alert('Title is required')
-      return
+      toast.error('Title is required')
+      return null
     }
 
     if (!text) {
-      alert('Text is required')
-      return
+      toast.error('Text is required')
+      return null
     }
 
-    const articleData = {
+    return {
       title,
       text,
     }
+  }
 
-    articlesService.postArticle(articleData)
-      .then(() => {
-        setTitle('')
-        setText('')
-      })
+  const handleDelete = () => {
+    articlesService.deleteArticle(article.id)
+      .then(() => setRedirect(true))
       .catch((err) => {
-        toast.error('Failed to post article. Ensure that both the push-service-demo-app and the push-api are running')
-        console.error('Failed to post article', err)
+        toast.error('Failed to delete article. Ensure that both the push-service-demo-app and the push-api are running')
+        console.error('Failed to delete article', err)
       })
   }
+
+  const handleUpdate = () => {
+    const data = getArticleData()
+    if (!data) return
+
+    articlesService.putArticle(article.id, data)
+      .then(() => setRedirect(true))
+      .catch((err) => {
+        toast.error('Failed to update article. Ensure that both the push-service-demo-app and the push-api are running')
+        console.error('Failed to update article', err)
+      })
+  }
+
+  const handleCreate = () => {
+    const data = getArticleData()
+    if (!data) return
+
+    articlesService.postArticle(data)
+      .then(() => setRedirect(true))
+      .catch((err) => {
+        toast.error('Failed to create article. Ensure that both the push-service-demo-app and the push-api are running')
+        console.error('Failed to create article', err)
+      })
+  }
+
+  const createActions = () => {
+    return (
+      <Fragment>
+        <button type="button" className="Publish-button" onClick={handleCreate}>Publish</button>
+      </Fragment>
+    )
+  }
+
+  const updateActions = () => {
+    return (
+      <Fragment>
+        <button type="button" className="Publish-button" onClick={handleDelete}>Delete</button>
+        <button type="button" className="Publish-button" onClick={handleUpdate}>Update</button>
+      </Fragment>
+    )
+  }
+
+  const actions = isCreating ? createActions() : updateActions()
 
   return (
     <div className="Publish">
@@ -56,7 +109,7 @@ function Publish() {
         </div>
 
         <div className="Publish-field">
-          <button type="submit" className="Publish-button">Publish</button>
+          {actions}
         </div>
       </form>
     </div>

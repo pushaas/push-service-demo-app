@@ -1,72 +1,106 @@
-const articlesChannel = () => 'channel-articles'
-const articleChannel = id => `channel-article-${id}`
+const ARTICLE = 'article'
+const CREATE = 'create'
+const DELETE = 'delete'
+const UPDATE = 'update'
 
 const pushApiClient = require('../clients/pushApiClient')
 
-const getConfig = () => pushApiClient.getConfig()
-  .then(data => ({
-    ...data,
-    channels: {
-      articles: articlesChannel(),
-    },
-  }))
+const buildMessage = (channels, action, type, data) => ({
+  channels,
+  content: JSON.stringify({
+    action,
+    type,
+    data,
+  }),
+})
 
-const createArticleChannel = (article) => {
-  const channelId = articleChannel(article.id)
-  const channel = {
+/*
+  articles channel
+*/
+const articlesChannelId = () => 'articles'
+
+const ensureArticlesChannel = () => pushApiClient.ensureChannel(articlesChannelId())
+
+const sendCreationOnArticlesChannel = article => pushApiClient.postMessage(buildMessage([articlesChannelId()], CREATE, ARTICLE, article))
+  .then(() => console.log('[sendCreationOnArticlesChannel] did send message with article creation', article.id))
+  .catch(err => console.error('[sendCreationOnArticlesChannel] failed to send message with article creation', article.id, err))
+
+const sendDeletionOnArticlesChannel = article => pushApiClient.postMessage(buildMessage([articlesChannelId()], DELETE, ARTICLE, article))
+  .then(() => console.log('[sendDeletionOnArticlesChannel] did send message with article deletion', article.id))
+  .catch(err => console.error('[sendDeletionOnArticlesChannel] failed to send message with article deletion', article.id, err))
+
+const sendUpdateOnArticlesChannel = article => pushApiClient.postMessage(buildMessage([articlesChannelId()], UPDATE, ARTICLE, article))
+  .then(() => console.log('[sendUpdateOnArticlesChannel] did send message with article update', article.id))
+  .catch(err => console.error('[sendUpdateOnArticlesChannel] failed to send message with article update', article.id, err))
+
+/*
+  article-<id> channel
+*/
+const articleChannelId = id => `article-${id}`
+
+const articleChannelData = (article) => {
+  const channelId = articleChannelId(article.id)
+  return {
     id: channelId,
     ttl: 86400, // 1 day in seconds
   }
+}
 
+const createArticleChannel = (article) => {
+  const channel = articleChannelData(article)
   return pushApiClient.createChannel(channel)
-    .then(() => console.log('[createArticleChannel] did create channel', channelId))
-    .catch(err => console.error('[createArticleChannel] failed to create channel', channelId, err))
+    .then(() => console.log('[createArticleChannel] did create channel', channel.id))
+    .catch(err => console.error('[createArticleChannel] failed to create channel', channel.id, err))
 }
 
 const deleteArticleChannel = (article) => {
-  const channelId = articleChannel(article.id)
+  const channelId = articleChannelId(article.id)
   return pushApiClient.deleteChannel(channelId)
     .then(() => console.log('[deleteArticleChannel] did delete channel', channelId))
     .catch(err => console.error('[deleteArticleChannel] failed to delete channel', channelId, err))
 }
 
-const ensureArticlesChannel = () => pushApiClient.ensureChannel(articlesChannel())
-
-const postMessageArticleCreation = (article) => {
-  const message = {
-    channels: [articlesChannel()],
-    content: JSON.stringify({
-      action: 'create',
-      type: 'article',
-      data: article,
-    }),
-  }
-
-  pushApiClient.postMessage(message)
-    .then(() => console.log('[postMessageArticleCreation] did send message with article creation', article.id))
-    .catch(err => console.error('[postMessageArticleCreation] failed to send message with article creation', article.id, err))
+const ensureArticleChannel = (article) => {
+  const channel = articleChannelData(article)
+  return pushApiClient.ensureChannel(channel.id, channel)
+    .then(() => console.log('[ensureArticleChannel] did ensure channel', channel.id))
+    .catch(err => console.error('[ensureArticleChannel] failed to ensure channel', channel.id, err))
 }
 
-const postMessageArticleDeletion = (article) => {
-  const message = {
-    channels: [articlesChannel()],
-    content: JSON.stringify({
-      action: 'delete',
-      type: 'article',
-      data: article,
-    }),
-  }
+const sendDeletionOnArticleChannel = article => pushApiClient.postMessage(buildMessage([articleChannelId(article.id)], DELETE, ARTICLE, article))
+  .then(() => console.log('[sendDeletionOnArticleChannel] did send message with article deletion', article.id))
+  .catch(err => console.error('[sendDeletionOnArticleChannel] failed to send message with article deletion', article.id, err))
 
-  pushApiClient.postMessage(message)
-    .then(() => console.log('[postMessageArticleDeletion] did send message with article deletion', article.id))
-    .catch(err => console.error('[postMessageArticleDeletion] failed to send message with article deletion', article.id, err))
-}
+const sendUpdateOnArticleChannel = article => pushApiClient.postMessage(buildMessage([articleChannelId(article.id)], UPDATE, ARTICLE, article))
+  .then(() => console.log('[sendUpdateOnArticleChannel] did send message with article update', article.id))
+  .catch(err => console.error('[sendUpdateOnArticleChannel] failed to send message with article update', article.id, err))
+
+/*
+  config
+*/
+const getConfig = () => pushApiClient.getConfig()
+  .then(data => ({
+    ...data,
+    channels: {
+      articles: articlesChannelId(),
+      article: articleChannelId('<article>'),
+    },
+  }))
 
 module.exports = {
-  getConfig,
+  // articles
+  ensureArticlesChannel,
+  sendCreationOnArticlesChannel,
+  sendDeletionOnArticlesChannel,
+  sendUpdateOnArticlesChannel,
+
+  // article-<id>
   createArticleChannel,
   deleteArticleChannel,
-  ensureArticlesChannel,
-  postMessageArticleCreation,
-  postMessageArticleDeletion,
+  ensureArticleChannel,
+  sendDeletionOnArticleChannel,
+  sendUpdateOnArticleChannel,
+
+  // config
+  getConfig,
 }

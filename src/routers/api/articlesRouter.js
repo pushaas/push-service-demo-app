@@ -1,55 +1,62 @@
 const express = require('express')
-const uuidv4 = require('uuid/v4')
 
+const articlesService = require('../../services/articlesService')
 const pushService = require('../../services/pushService')
 
 const router = express.Router()
 
-let articles = [
-  {
-    id: uuidv4(),
-    published: new Date(),
-    text: 'Brazil x France will match up next Sunday in Paris.',
-    title: 'Soccer World Cup Finals!',
-  },
-  {
-    id: uuidv4(),
-    published: new Date(),
-    text: 'We\'ve played the game and it is awesome. Great graphics and game mechanics, plus 4 new civilizations.',
-    title: 'Age Of Empires 2 Definitive Edition',
-  },
-]
-
 router.get('/', (req, res) => {
-  res.json(articles)
+  res.json(articlesService.getAll())
 })
 
-router.post('/', (req, res) => {
-  const article = {
-    id: uuidv4(),
-    published: new Date(),
-    text: req.body.text || 'Default text',
-    title: req.body.title || 'Default title',
+router.get('/:id', (req, res) => {
+  const { id } = req.params
+  const article = articlesService.get(id)
+  if (article) {
+    res.json(article)
+    return
   }
-  articles = [article, ...articles]
+
+  res.status(404)
+  res.end()
+})
+
+router.post('/', async (req, res) => {
+  const article = articlesService.create(req.body)
 
   res.status(201)
   res.end()
 
-  pushService.postMessageArticleCreation(article) // notify the creation of this article on the articles channel
-  pushService.createArticleChannel(article) // create a specific channel for this article
+  await pushService.sendCreationOnArticlesChannel(article)
+  await pushService.createArticleChannel(article)
 })
 
-router.delete('/:id', (req, res) => {
+router.put('/:id', async (req, res) => {
   const { id } = req.params
-  const article = articles.find(n => n.id === id)
-  articles = articles.filter(n => n !== article)
+  const article = articlesService.update(id, req.body)
 
-  res.status(204)
+  res.json(article)
+
+  await pushService.sendUpdateOnArticlesChannel(article)
+  await pushService.sendUpdateOnArticleChannel(article)
+})
+
+router.delete('/:id', async (req, res) => {
+  const { id } = req.params
+  const article = articlesService.remove(id)
+
+  if (article) {
+    res.status(204)
+    res.end()
+
+    await pushService.sendDeletionOnArticlesChannel(article)
+    await pushService.sendDeletionOnArticleChannel(article)
+    await pushService.deleteArticleChannel(article)
+    return
+  }
+
+  res.status(404)
   res.end()
-
-  pushService.postMessageArticleDeletion(article) // notify the deletion of this article on the articles channel
-  pushService.deleteArticleChannel(article) // delete specific channel for this article
 })
 
 module.exports = router

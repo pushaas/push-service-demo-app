@@ -99,9 +99,34 @@ hr {
   margin: 10px;
 }
 
+.Read-links {
+  display: flex;
+  justify-content: center;
+}
+
 .Read-article .App-link {
   font-size: 0.6em;
   display: block;
+  margin: 10px;
+}
+
+/*
+  -----------------
+  ReadArticle
+  -----------------
+*/
+.ReadArticle {
+  width: 600px;
+}
+
+.ReadArticle-article {
+  border: 1px solid white;
+  border-radius: 5px;
+  margin: 20px 0;
+}
+
+.ReadArticle-title {
+  font-size: 1em;
   margin: 10px;
 }
 

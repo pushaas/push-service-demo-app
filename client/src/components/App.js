@@ -27,7 +27,7 @@ function App() {
         <Route path="/" exact component={Home} />
         <Route path="/read" exact component={Read} />
         <Route path="/read/:id" exact component={ReadArticle} />
-        <Route path="/publish" exact component={Publish} />
+        <Route path="/publish/:id?" exact component={Publish} />
       </main>
     </Fragment>
   )
