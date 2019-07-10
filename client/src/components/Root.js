@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { BrowserRouter as Router } from 'react-router-dom'
 import { ToastContainer, toast } from 'react-toastify'
 
+import SystemError from './common/SystemError'
 import configService from '../services/configService'
 import ConfigContext from '../contexts/ConfigContext'
 import App from './App'
@@ -12,8 +13,8 @@ function Root() {
     configService.getConfig()
       .then(setConfig)
       .catch((err) => {
-        toast.error('Failed to get config. Ensure that both the push-service-demo-app and the push-api are running')
-        console.error('Failed to get config', err)
+        toast.error(SystemError)
+        console.error('[Root] failed to get config', err)
       })
   }, [])
 
