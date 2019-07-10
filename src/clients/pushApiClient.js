@@ -1,9 +1,9 @@
 const PushApiClient = require('push-api-client-javascript')
+const env = require('../util/env')
 
-// TODO improve the check of these variables
-const endpoint = process.env.PUSHAAS_ENDPOINT
-const username = process.env.PUSHAAS_USERNAME
-const password = process.env.PUSHAAS_PASSWORD
+const endpoint = env.PUSHAAS_ENDPOINT()
+const username = env.PUSHAAS_USERNAME()
+const password = env.PUSHAAS_PASSWORD()
 
 const options = {
   endpoint,
