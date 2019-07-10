@@ -33,7 +33,7 @@ router.post('/', async (req, res) => {
 
 router.put('/:id', async (req, res) => {
   const { id } = req.params
-  const article = articlesService.update(id, req.body)
+  const article = articlesService.update(id, { ...req.body, id })
 
   res.json(article)
 

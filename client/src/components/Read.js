@@ -3,14 +3,26 @@ import { NavLink } from 'react-router-dom'
 import { toast } from 'react-toastify'
 
 import articlesService from '../services/articlesService'
-import pushStreamService from '../services/pushStreamService'
-
 import ConfigContext from '../contexts/ConfigContext'
+import usePushStreamArticleMessage from '../hooks/usePushStreamArticleMessage'
+import usePushStreamInstance from '../hooks/usePushStreamInstance'
 
 function Read({ match }) {
   const config = useContext(ConfigContext)
   const [articles, setArticles] = useState([])
   const [pushStreamInstance, setPushStreamInstance] = useState(null)
+
+  const onCreate = (article) => {
+    setArticles([article, ...articles])
+    toast.success('A new article is out! 🤩')
+  }
+  const onDelete = (article) => setArticles(articles.filter(a => a.id !== article.id))
+  const onUpdate = (article) => setArticles(articles.map(a => a.id === article.id ? article : a))
+
+  const { port, hostname: host } = config.pushStream
+  const channel = config.channels.articles
+  usePushStreamInstance(setPushStreamInstance, port, host, channel)
+  usePushStreamArticleMessage(pushStreamInstance, setPushStreamInstance, onCreate, onDelete, onUpdate)
 
   useEffect(() => {
     articlesService.getArticles()
@@ -20,67 +32,6 @@ function Read({ match }) {
         console.error('Failed to get articles', err)
       })
   }, [])
-
-  useEffect(() => {
-    const { port } = config.pushStream
-    const host = config.pushStream.hostname
-    const articlesChannel = config.channels.articles
-
-    const settings = {
-      host,
-      port,
-      modes: 'eventsource',
-      messagesPublishedAfter: 900,
-      messagesControlByArgument: true,
-      onerror: (err) => console.error('[onerror]', err),
-    }
-
-    const instance = pushStreamService.newPushStreamInstance(settings)
-    setPushStreamInstance(instance)
-    instance.addChannel(articlesChannel)
-    instance.connect()
-
-    return () => {
-      instance.disconnect()
-    }
-  }, [setPushStreamInstance, config])
-
-  useEffect(() => {
-    if (!pushStreamInstance) {
-      return
-    }
-
-    const onMessage = (text, id, channel, eventId, isLastMessageFromBatch, time) => {
-      if (text === 'ping') {
-        return
-      }
-
-      const message = JSON.parse(text)
-      const { action, data: article } = message
-      if (action === 'create') {
-        setArticles([article, ...articles])
-        return
-      }
-
-      if (action === 'delete') {
-        setArticles(articles.filter(a => a.id !== article.id))
-        return
-      }
-
-      if (action === 'delete') {
-        setArticles(articles.filter(a => a.id !== article.id))
-        return
-      }
-
-      if (action === 'update') {
-        setArticles(articles.map(a => a.id === article.id ? article : a))
-        return
-      }
-
-      console.warn('[Read] unhandled message', message)
-    }
-    pushStreamInstance.onmessage = onMessage
-  }, [pushStreamInstance, articles])
 
   return (
     <div className="Read">
