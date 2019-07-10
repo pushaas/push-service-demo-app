@@ -108,7 +108,7 @@ function Publish({ location }) {
           <textarea name="title" value={text} onChange={handleTextChange} />
         </div>
 
-        <div className="Publish-field">
+        <div className="Publish-actions">
           {actions}
         </div>
       </form>

@@ -145,13 +145,6 @@ hr {
   flex-direction: column;
 }
 
-.Publish button {
-  align-self: flex-end;
-  height: 30px;
-  width: 60px;
-  font-size: 0.5em;
-}
-
 .Publish-field {
   margin: 20px 0 0;
   display: flex;
@@ -178,4 +171,18 @@ hr {
   border-width: 1px;
   font-size: 0.8em;
   width: 100%;
+}
+
+.Publish-actions {
+  margin: 20px 0;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.Publish-actions button {
+  margin-left: 20px;
+  height: 30px;
+  width: 60px;
+  font-size: 0.5em;
 }
