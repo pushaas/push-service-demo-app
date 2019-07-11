@@ -19,7 +19,12 @@ const buildMessage = (channels, action, type, data) => ({
 */
 const articlesChannelId = () => 'articles'
 
-const ensureArticlesChannel = () => pushApiClient.ensureChannel(articlesChannelId())
+const ensureArticlesChannel = () => {
+  const channelId = articlesChannelId()
+  return pushApiClient.ensureChannel(channelId)
+    .then(() => console.log('[ensureArticlesChannel] did ensure channel', channelId))
+    .catch(err => console.error('[ensureArticlesChannel] failed to ensure channel', channelId, err))
+}
 
 const sendCreationOnArticlesChannel = article => pushApiClient.postMessage(buildMessage([articlesChannelId()], CREATE, ARTICLE, article))
   .then(() => console.log('[sendCreationOnArticlesChannel] did send message with article creation', article.id))
