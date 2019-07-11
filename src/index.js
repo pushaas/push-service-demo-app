@@ -1,4 +1,5 @@
 require('dotenv').config()
+const path = require('path')
 const express = require('express')
 const bodyParser = require('body-parser')
 const morgan = require('morgan')
@@ -39,7 +40,14 @@ const initApp = () => {
   const app = express()
   app.use(bodyParser.json())
   app.use(morgan('tiny'))
+
   app.use('/api', apiRouter)
+
+  // static server
+  const staticPath = path.join(__dirname, '..', 'client/build')
+  app.use('/', express.static(staticPath))
+  // to support client-side routing
+  app.get('*', (req, res) => res.sendFile(path.join(staticPath, 'index.html')))
 
   const port = env.PORT() || 8888
   app.listen(port, () => console.log(`push-service-demo-app listening on port ${port}`))

@@ -1,0 +1,7 @@
+node_modules
+.env
+Dockerfile-prod
+Makefile
+
+client/build
+client/node_modules

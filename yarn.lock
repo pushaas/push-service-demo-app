@@ -2199,11 +2199,6 @@ push-api-client-javascript@0.0.2:
   dependencies:
     axios "0.19.0"
 
-pushstreamjs@0.5.4:
-  version "0.5.4"
-  resolved "https://registry.yarnpkg.com/pushstreamjs/-/pushstreamjs-0.5.4.tgz#c27ed3e39ba1d8388cc0cb31ac45e9c5f576ee2f"
-  integrity sha512-gKYvy0k9+GbQZFT9Hu7Jpd/nkDgMlQOOecC4lLaIvbl3Y15LtKYbrhMdeHh7l6F2Pb8ccpgLXvsBhKcamoeEqA==
-
 qs@6.7.0:
   version "6.7.0"
   resolved "https://registry.yarnpkg.com/qs/-/qs-6.7.0.tgz#41dc1a015e3d581f1621776be31afb2876a9b1bc"
