@@ -27,7 +27,7 @@ watch:
 
 .PHONY: build-client
 build-client:
-	@cd client && yarn build
+	cd client && $(PKG_MANAGER) install && $(PKG_MANAGER) run build
 
 ########################################
 # docker
