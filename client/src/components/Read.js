@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { NavLink } from 'react-router-dom'
 import { toast } from 'react-toastify'
+import uniqBy from 'lodash/uniqBy'
 
 import articlesService from '../services/articlesService'
 import ConfigContext from '../contexts/ConfigContext'
@@ -13,7 +14,7 @@ function Read({ match }) {
   const [pushStreamInstance, setPushStreamInstance] = useState(null)
 
   const onCreate = (article) => {
-    setArticles([article, ...articles])
+    setArticles(uniqBy([article, ...articles], 'id'))
     toast.success('A new article is out! 🤩')
   }
   const onDelete = (article) => setArticles(articles.filter(a => a.id !== article.id))
