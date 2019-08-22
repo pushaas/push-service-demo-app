@@ -6,7 +6,7 @@ function Home() {
   return (
     <div className="Home">
       <p>
-        Welcome to the <NewTabLink href="https://github.com/rafaeleyng/push-service-demo-app">Push Service Demo App</NewTabLink>!
+        Welcome to the <NewTabLink href="https://github.com/pushaas/push-service-demo-app">Push Service Demo App</NewTabLink>!
       </p>
       <p>
         <small>

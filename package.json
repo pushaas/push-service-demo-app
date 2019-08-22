@@ -13,14 +13,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/rafaeleyng/push-service-demo-app.git"
+    "url": "git+https://github.com/pushaas/push-service-demo-app.git"
   },
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/rafaeleyng/push-service-demo-app/issues"
+    "url": "https://github.com/pushaas/push-service-demo-app/issues"
   },
-  "homepage": "https://github.com/rafaeleyng/push-service-demo-app#readme",
+  "homepage": "https://github.com/pushaas/push-service-demo-app#readme",
   "dependencies": {
     "axios": "0.19.0",
     "body-parser": "1.19.0",
