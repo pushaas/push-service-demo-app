@@ -9,7 +9,7 @@
     "lint:fix": "eslint --ext .js ./src --fix",
     "lint:watch": "esw --ext .js ./src --fix --watch",
     "start": "node ./src/index.js",
-    "watch": "./node_modules/.bin/nodemon ./src/index.js"
+    "watch": "nodemon ./src/index.js"
   },
   "repository": {
     "type": "git",

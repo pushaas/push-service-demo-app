@@ -1,2 +1,1 @@
-web: yarn watch
-
+web: yarn start
