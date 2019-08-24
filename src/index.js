@@ -22,7 +22,7 @@ const initCheckServices = async () => {
 // initializes sample data
 const initData = async () => {
   try {
-    await pushService.ensureArticlesChannel()
+    await pushService.ensureArticlesChannel(true)
   } catch (err) {
     console.error('Could not ensure articles channel', err)
     throw err

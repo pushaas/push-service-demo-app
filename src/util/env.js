@@ -8,27 +8,29 @@ const PUSHAAS_PASSWORD = () => process.env.PUSHAAS_PASSWORD
 const setupEnv = () => {
   let hasError = false
 
-  const requiredServiceVar = (name) => {
-    hasError = true
-    console.error(`[setupEnv] required ${name} variable is not set. This variable is set when the push-service instance is bound to the app. Did you create an instance of the push-service and bind it to the current app?`)
-  }
-
   if (!PORT()) {
     console.info(`[setupEnv] PORT variable not set, using default ${DEFAULT_PORT}`)
   }
 
-  if (!PUSHAAS_ENDPOINT()) {
-    requiredServiceVar('PUSHAAS_ENDPOINT')
-  }
-  if (!PUSHAAS_USERNAME()) {
-    requiredServiceVar('PUSHAAS_USERNAME')
-  }
-  if (!PUSHAAS_PASSWORD()) {
-    requiredServiceVar('PUSHAAS_PASSWORD')
+  console.error('[setupEnv] the app will now check if some required environment variables are defined')
+
+  const checkVar = (varFn, name) => {
+    if (!varFn()) {
+      hasError = true
+      console.error(`[setupEnv] ERROR required ${name} variable is NOT set. Did you create an instance of the push-service and bind it to the current app?`)
+    } else {
+      console.info(`[setupEnv] OK required ${name} variable is set.`)
+    }
   }
 
+  checkVar(PUSHAAS_ENDPOINT, 'PUSHAAS_ENDPOINT')
+  checkVar(PUSHAAS_USERNAME, 'PUSHAAS_USERNAME')
+  checkVar(PUSHAAS_PASSWORD, 'PUSHAAS_PASSWORD')
+
   if (hasError) {
-    throw new Error('[setupEnv] some errors were found while checking the environment. Please read the logs above.')
+    console.error('[setupEnv] ERROR some errors were found while checking the environment. Please read the logs above')
+  } else {
+    console.info('[setupEnv] OK all required environment variables are set')
   }
 }
 

@@ -19,11 +19,11 @@ const buildMessage = (channels, action, type, data) => ({
 */
 const articlesChannelId = () => 'articles'
 
-const ensureArticlesChannel = () => {
+const ensureArticlesChannel = (silent = false) => {
   const channelId = articlesChannelId()
   return pushApiClient.ensureChannel(channelId)
     .then(() => console.log('[ensureArticlesChannel] did ensure channel', channelId))
-    .catch(err => console.error('[ensureArticlesChannel] failed to ensure channel', channelId, err))
+    .catch(err => console.error('[ensureArticlesChannel] failed to ensure channel', channelId, silent ? '' : err))
 }
 
 const sendCreationOnArticlesChannel = article => pushApiClient.postMessage(buildMessage([articlesChannelId()], CREATE, ARTICLE, article))
@@ -65,11 +65,11 @@ const deleteArticleChannel = (article) => {
     .catch(err => console.error('[deleteArticleChannel] failed to delete channel', channelId, err))
 }
 
-const ensureArticleChannel = (article) => {
+const ensureArticleChannel = (article, silent = false) => {
   const channel = articleChannelData(article)
   return pushApiClient.ensureChannel(channel.id, channel)
     .then(() => console.log('[ensureArticleChannel] did ensure channel', channel.id))
-    .catch(err => console.error('[ensureArticleChannel] failed to ensure channel', channel.id, err))
+    .catch(err => console.error('[ensureArticleChannel] failed to ensure channel', channel.id, silent ? '' : err))
 }
 
 const sendDeletionOnArticleChannel = article => pushApiClient.postMessage(buildMessage([articleChannelId(article.id)], DELETE, ARTICLE, article))
@@ -83,9 +83,19 @@ const sendUpdateOnArticleChannel = article => pushApiClient.postMessage(buildMes
 /*
   config
 */
+let varsOk = true
+const setVarsOk = (status) => { varsOk = status }
+
+let servicesOk = true
+const setServicesOk = (status) => { servicesOk = status }
+
 const getConfig = () => pushApiClient.getConfig()
   .then(data => ({
     ...data,
+    status: {
+      varsOk,
+      servicesOk,
+    },
     channels: {
       articles: articlesChannelId(),
       article: articleChannelId('<article>'),
@@ -107,5 +117,7 @@ module.exports = {
   sendUpdateOnArticleChannel,
 
   // config
+  setVarsOk,
+  setServicesOk,
   getConfig,
 }

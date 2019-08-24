@@ -19,7 +19,7 @@ const initData = async () => {
 
   articles.forEach((article) => {
     promises.push(articlesService.create(article))
-    promises.push(pushService.ensureArticleChannel(article))
+    promises.push(pushService.ensureArticleChannel(article, true))
   })
 
   return Promise.all(promises)
