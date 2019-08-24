@@ -2,6 +2,7 @@ import React, { Fragment, useContext } from 'react'
 import { Route, NavLink } from 'react-router-dom'
 
 import ConfigContext from '../contexts/ConfigContext'
+import Banner from './Banner'
 import Home from './Home'
 import Read from './Read'
 import ReadArticle from './ReadArticle'
@@ -12,6 +13,7 @@ function App() {
   const loading = (null)
   const loaded = (
     <Fragment>
+      <Banner />
       <header className="App-header">
         <h1 className="App-title">Push Service Demo App</h1>
         <nav>

@@ -1,3 +1,5 @@
+const pushService = require('../services/pushService')
+
 const DEFAULT_PORT = 8888
 
 const PORT = () => process.env.PORT || DEFAULT_PORT
@@ -28,7 +30,8 @@ const setupEnv = () => {
   checkVar(PUSHAAS_PASSWORD, 'PUSHAAS_PASSWORD')
 
   if (hasError) {
-    console.error('[setupEnv] ERROR some errors were found while checking the environment. Please read the logs above')
+    pushService.setVarsOk(false)
+    console.error('[setupEnv] ERROR some errors were found while checking the environment variables. Please read the logs above')
   } else {
     console.info('[setupEnv] OK all required environment variables are set')
   }

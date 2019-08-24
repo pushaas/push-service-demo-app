@@ -22,9 +22,8 @@ function ReadArticle({ location: { state: { article: originalArticle }} }) {
     toast.info('The article was updated, check it out! 😉')
   }
 
-  const { port, hostname: host } = config.pushStream
   const channel = config.channels.article.replace('<article>', article.id)
-  usePushStreamInstance(setPushStreamInstance, port, host, channel)
+  usePushStreamInstance(setPushStreamInstance, config.pushStream, channel)
   usePushStreamArticleMessage(pushStreamInstance, setPushStreamInstance, onCreate, onDelete, onUpdate)
 
   if (redirect) {

@@ -20,9 +20,8 @@ function Read({ match }) {
   const onDelete = (article) => setArticles(articles.filter(a => a.id !== article.id))
   const onUpdate = (article) => setArticles(articles.map(a => a.id === article.id ? article : a))
 
-  const { port, hostname: host } = config.pushStream
   const channel = config.channels.articles
-  usePushStreamInstance(setPushStreamInstance, port, host, channel)
+  usePushStreamInstance(setPushStreamInstance, config.pushStream, channel)
   usePushStreamArticleMessage(pushStreamInstance, setPushStreamInstance, onCreate, onDelete, onUpdate)
 
   useEffect(() => {

@@ -4,8 +4,13 @@ import { toast } from 'react-toastify'
 import pushStreamService from '../services/pushStreamService'
 import SystemError from '../components/common/SystemError'
 
-const usePushStreamInstance = (setPushStreamInstance, port, host, channel) => {
+const usePushStreamInstance = (setPushStreamInstance, pushStreamConfig, channel) => {
   useEffect(() => {
+    if (!pushStreamConfig) {
+      return () => {}
+    }
+
+    const { port, hostname: host } = pushStreamConfig
     const settings = {
       host,
       port,
@@ -26,7 +31,7 @@ const usePushStreamInstance = (setPushStreamInstance, port, host, channel) => {
     return () => {
       instance.disconnect()
     }
-  }, [setPushStreamInstance, port, host, channel])
+  }, [setPushStreamInstance, pushStreamConfig, channel])
 }
 
 export default usePushStreamInstance
