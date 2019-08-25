@@ -9,14 +9,14 @@ const {
 const checkEnv = () => {
   let hasError = false
 
-  console.error('[setupEnv] the app will now check if some required environment variables are defined')
+  console.error('[checkEnv] the app will now check if some required environment variables are defined')
 
   const checkVar = (varFn, name) => {
     if (!varFn()) {
       hasError = true
-      console.error(`[setupEnv] ERROR required ${name} variable is NOT set. Did you create an instance of the push-service and bind it to the current app?`)
+      console.error(`[checkEnv] ERROR required ${name} variable is NOT set. Did you create an instance of the push-service and bind it to the current app?`)
     } else {
-      console.info(`[setupEnv] OK required ${name} variable is set.`)
+      console.info(`[checkEnv] OK required ${name} variable is set.`)
     }
   }
 
@@ -26,9 +26,9 @@ const checkEnv = () => {
 
   if (hasError) {
     pushService.setVarsOk(false)
-    console.error('[setupEnv] ERROR some errors were found while checking the environment variables. Please read the logs above')
+    console.error('[checkEnv] ERROR some errors were found while checking the environment variables. Please read the logs above')
   } else {
-    console.info('[setupEnv] OK all required environment variables are set')
+    console.info('[checkEnv] OK all required environment variables are set')
   }
 }
 
