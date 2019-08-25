@@ -7,12 +7,13 @@ const morgan = require('morgan')
 const pushService = require('./services/pushService')
 const apiRouter = require('./routers/api')
 
-const checkServices = require('./util/checkServices')
 const env = require('./util/env')
+const checkEnv = require('./util/checkEnv')
+const checkServices = require('./util/checkServices')
 const initArticlesData = require('./util/initArticlesData')
 
 // verifies the required environment variables
-const initEnvironment = () => env.setupEnv()
+const initEnvironment = () => checkEnv()
 
 // verifies whether the services this app depends on are running
 const initCheckServices = async () => {
