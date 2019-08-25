@@ -3,7 +3,7 @@ const pushService = require('../services/pushService')
 
 const checkServices = async () => {
   let hasError = false
-  console.error('[checkServices] ERROR the app will now determine whether it can reach the services')
+  console.error('[checkServices] the app will now determine whether it can reach the services')
 
   /*
     tries to reach the push-api
