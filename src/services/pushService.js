@@ -101,8 +101,9 @@ const getConfig = () => pushApiClient.getConfig()
       article: articleChannelId('<article>'),
     },
   }))
-  .catch(() => {
+  .catch((err) => {
     console.error('[pushService] failed to get config from push-api, returning only local config')
+    console.error('[pushService] err:', err)
     return {
       status: {
         varsOk,
