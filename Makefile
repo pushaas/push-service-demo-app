@@ -1,6 +1,6 @@
 TAG := latest
 CONTAINER := push-service-demo-app
-IMAGE := rafaeleyng/$(CONTAINER)
+IMAGE := pushaas/$(CONTAINER)
 IMAGE_TAGGED := $(IMAGE):$(TAG)
 NETWORK := push-service-network
 PORT_CONTAINER := 8888
@@ -34,19 +34,19 @@ build-client:
 ########################################
 
 # prod
-.PHONY: docker-clean-prod
-docker-clean-prod:
+.PHONY: docker-clean
+docker-clean:
 	@-docker rm -f $(CONTAINER)
 
-.PHONY: docker-build-prod
-docker-build-prod:
+.PHONY: docker-build
+docker-build:
 	@docker build \
-		-f Dockerfile-prod \
+		-f Dockerfile \
 		-t $(IMAGE_TAGGED) \
 		.
 
-.PHONY: docker-run-prod
-docker-run-prod: docker-clean-prod
+.PHONY: docker-run
+docker-run: docker-clean
 	@docker run \
 		-e PUSHAAS_ENDPOINT="http://push-api:8080" \
 		-e PUSHAAS_USERNAME="app" \
@@ -57,10 +57,10 @@ docker-run-prod: docker-clean-prod
 		-p $(PORT_HOST):$(PORT_CONTAINER) \
 		$(IMAGE_TAGGED)
 
-.PHONY: docker-build-and-run-prod
-docker-build-and-run-prod: docker-build-prod docker-run-prod
+.PHONY: docker-build-and-run
+docker-build-and-run: docker-build docker-run
 
-.PHONY: docker-push-prod
-docker-push-prod: docker-build-prod
+.PHONY: docker-push
+docker-push: docker-build
 	@docker push \
 		$(IMAGE_TAGGED)
