@@ -103,7 +103,7 @@ const getConfig = () => pushApiClient.getConfig()
   }))
   .catch((err) => {
     console.error('[pushService] failed to get config from push-api, returning only local config')
-    console.error('[pushService] err:', err)
+    console.error('[pushService] err:', err.message)
     return {
       status: {
         varsOk,
